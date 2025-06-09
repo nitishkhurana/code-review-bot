@@ -1,0 +1,38 @@
+name: .NET Review Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore & build
+        run: dotnet build --no-restore
+
+      - name: Run Roslyn Analyzers
+        run: dotnet build /warnaserror /nologo /clp:ErrorsOnly /p:TreatWarningsAsErrors=true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.10
+
+      - name: Install Dependencies
+        run: pip install PyGithub
+
+      - name: Run Review Bot
+        run: python3 review_bot/review_bot.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
