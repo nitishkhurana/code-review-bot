@@ -1,9 +1,8 @@
 import os
 from github import Github
-from openai import OpenAI
+from mistralai import Mistral
 
 # Inputs
-OpenAI.api_key = os.getenv("OPENAI_API_KEY")
 token = os.getenv("GITHUB_TOKEN")
 repo_name = os.getenv("GITHUB_REPOSITORY")
 pr_number = int(os.getenv("PR_NUMBER"))
@@ -25,8 +24,9 @@ for file in pr.get_files():
     ```diff\n{file.patch}\n```"""
 
     try:
-        response = OpenAI.ChatCompletion.create(
-            model="gpt-4",
+        mistralClient = Mistral()
+        response = mistralClient.chat.complete(
+            model="mistral-small-latest",
             messages=[
                 {"role": "system", "content": "You are a helpful code reviewer."},
                 {"role": "user", "content": prompt}
