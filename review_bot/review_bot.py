@@ -5,8 +5,8 @@ import openai
 # Inputs
 openai.api_key = os.getenv("OPENAI_API_KEY")
 token = os.getenv("GITHUB_TOKEN")
-repo_name = "git@github.com:nitishkhurana/code-review-bot.git"#os.getenv("GITHUB_REPOSITORY")
-pr_number = 7#int(os.getenv("PR_NUMBER"))
+repo_name = os.getenv("GITHUB_REPOSITORY")
+pr_number = int(os.getenv("PR_NUMBER"))
 
 #Connect to github
 g = Github(token)
