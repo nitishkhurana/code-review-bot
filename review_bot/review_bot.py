@@ -24,7 +24,7 @@ for file in pr.get_files():
     ```diff\n{file.patch}\n```"""
 
     try:
-        mistralClient = Mistral(api_key=os.getenv("MISTRAL_API_KEY", ""),
+        mistralClient = Mistral(api_key=os.getenv("MISTRAL_API_KEY"),
         )
         response = mistralClient.chat.complete(
             model="mistral-small-latest",
