@@ -1,27 +1,45 @@
 import os
 from github import Github
+import openai
 
 # Inputs
+openai.api_key = os.getenv("OPENAI_API_KEY")
 token = os.getenv("GITHUB_TOKEN")
 repo_name = os.getenv("GITHUB_REPOSITORY")
 pr_number = int(os.getenv("PR_NUMBER"))
 
+#Connect to github
 g = Github(token)
 repo = g.get_repo(repo_name)
 pr = repo.get_pull(pr_number)
 
+comments = []
 print(f"Reviewing PR #{pr_number} in {repo_name}")
 
 for file in pr.get_files():
-    if not file.filename.endswith(".cs"):
+    if not file.filename.endswith(".cs") or not file.patch:
         continue
 
-    patch = file.patch or ""
-    for i, line in enumerate(patch.splitlines()):
-        if "+Console.WriteLine" in line or "+// TODO" in line:
-            pr.create_review_comment(
-                body="⚠️ Avoid `Console.WriteLine` or TODOs in production code.",
-                commit_id=pr.head.sha,
-                path=file.filename,
-                position=i + 1
-            )
+    prompt = f"""You are a senior .NET developer reviewing code. 
+    Provide a code review for the following diff (GitHub pull request format). Be constructive and concise.\n\n
+    ```diff\n{file.patch}\n```"""
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful code reviewer."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        suggestion = response['choices'][0]['message']['content']
+        comments.append(f"### Review for `{file.filename}`\n{suggestion}")
+    except Exception as e:
+        comments.append(f"Error analyzing {file.filename}: {str(e)}")
+
+# Post summary as PR comment
+if comments:
+    pr.create_issue_comment("\n\n---\n".join(comments))
+    print("Comments posted.")
+else:
+    print("No comments to post.")
