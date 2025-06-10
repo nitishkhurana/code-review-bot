@@ -3,7 +3,7 @@ from github import Github
 from openai import OpenAI
 
 # Inputs
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OpenAI.api_key = os.getenv("OPENAI_API_KEY")
 token = os.getenv("GITHUB_TOKEN")
 repo_name = os.getenv("GITHUB_REPOSITORY")
 pr_number = int(os.getenv("PR_NUMBER"))
@@ -25,7 +25,7 @@ for file in pr.get_files():
     ```diff\n{file.patch}\n```"""
 
     try:
-        response = openai.ChatCompletion.create(
+        response = OpenAI.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a helpful code reviewer."},
