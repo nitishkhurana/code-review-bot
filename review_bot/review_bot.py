@@ -32,7 +32,7 @@ for file in pr.get_files():
                 {"role": "user", "content": prompt}
             ]
         )
-        suggestion = response['choices'][0]['message']['content']
+        suggestion = response.choices[0].message.content
         comments.append(f"### Review for `{file.filename}`\n{suggestion}")
     except Exception as e:
         comments.append(f"Error analyzing {file.filename}: {str(e)}")
