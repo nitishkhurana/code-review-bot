@@ -1,9 +1,8 @@
 import os
 from github import Github
-import openai
+from mistralai import Mistral
 
 # Inputs
-openai.api_key = os.getenv("OPENAI_API_KEY")
 token = os.getenv("GITHUB_TOKEN")
 repo_name = os.getenv("GITHUB_REPOSITORY")
 pr_number = int(os.getenv("PR_NUMBER"))
@@ -25,14 +24,15 @@ for file in pr.get_files():
     ```diff\n{file.patch}\n```"""
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
+        mistralClient = Mistral(api_key="oJiXyrl6BwYbWLzMyqcECc46wjlsWWP8")
+        response = mistralClient.chat.complete(
+            model="mistral-small-latest",
             messages=[
                 {"role": "system", "content": "You are a helpful code reviewer."},
                 {"role": "user", "content": prompt}
             ]
         )
-        suggestion = response['choices'][0]['message']['content']
+        suggestion = response.choices[0].message.content
         comments.append(f"### Review for `{file.filename}`\n{suggestion}")
     except Exception as e:
         comments.append(f"Error analyzing {file.filename}: {str(e)}")
