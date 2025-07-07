@@ -17,3 +17,9 @@ public class Fibbonaci
         }
     }
 }
+
+string query = "SELECT salary FROM employee WHERE empname = "+ request.getParameter("empname ");
+try {
+Statement statement = connection.createStatement( … ); ResultSet
+results = statement.executeQuery( query );
+}
