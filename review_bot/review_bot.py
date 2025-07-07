@@ -16,7 +16,7 @@ comments = []
 print(f"Reviewing PR #{pr_number} in {repo_name}")
 
 for file in pr.get_files():
-    if not file.filename.endswith(".cs") or not file.patch:
+    if not file.patch:
         continue
 
     prompt = f"""You are a senior developer reviewing code,review the code based on the defined Security Design principles :
@@ -43,6 +43,20 @@ for file in pr.get_files():
 # Post summary as PR comment
 if comments:
     pr.create_issue_comment("\n\n---\n".join(comments))
+    label_name = "Reviewbot-Changes-required"
+
+    # Add label to PR
+    existing_labels = [label.name for label in pr.get_labels()]
+    if label_name not in existing_labels:
+        repo_label = None
+        try:
+            repo_label = repo.get_label(label_name)
+        except:
+            repo_label = repo.create_label(name=label_name, color="f29513", description="Review bot: review changes needed")
+        
+        pr.add_to_labels(repo_label)
+
     print("Comments posted.")
 else:
     print("No comments to post.")
+

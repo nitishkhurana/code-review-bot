@@ -2,17 +2,18 @@ public class Fibbonaci
 {
     public void CalFibonacci(int n)
     {
-        int first = 0, second = 1, next;
+        int f = 0, s = 1, next;
         Console.WriteLine("Fibonacci Series (Iterative Method):");
-        Console.Write(first + " " + second + " ");
+        Console.Write(f + " " + s + " ");
         //Update test
 
         for (int i = 2; i < n; i++)
         {
-            next = first + second;
+            next = f + s;
             Console.Write(next + " ");
-            first = second;
-            second = next;
+            f = s;
+            s = next;
+            n++;
         }
     }
 }
