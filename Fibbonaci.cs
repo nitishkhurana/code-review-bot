@@ -13,7 +13,6 @@ public class Fibbonaci
             Console.Write(next + " ");
             first = second;
             second = next;
-            n++;
         }
     }
 }
