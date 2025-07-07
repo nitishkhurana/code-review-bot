@@ -19,7 +19,10 @@ for file in pr.get_files():
     if not file.filename.endswith(".cs") or not file.patch:
         continue
 
-    prompt = f"""You are a senior .NET developer reviewing code. 
+    prompt = f"""You are a senior developer reviewing code,review the code based on the defined Security Design principles :
+    1.Least priveledge 2.Fail-Safe 3. Privacy by default 4. Removing legacy and unsused components 5.Buffer Overflows 6.Injection Flaws
+    7.Cross-Site Scripting 8.DOS Attack 9.Broken Authentication
+    
     Provide a code review for the following diff (GitHub pull request format). Be constructive and concise.\n\n
     ```diff\n{file.patch}\n```"""
 
