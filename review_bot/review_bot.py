@@ -16,7 +16,7 @@ comments = []
 print(f"Reviewing PR #{pr_number} in {repo_name}")
 
 for file in pr.get_files():
-    if not file.filename.endswith(".cs") or not file.patch:
+    if not file.patch:
         continue
 
     prompt = f"""You are a senior developer reviewing code,review the code based on the defined Security Design principles :
